@@ -1,7 +1,8 @@
 {
-  "name": "mon-site-films",
+  "name": "AMC",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://sylvainmalinowski31-code.github.io/AMC/",
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -10,8 +11,7 @@
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-scripts": "5.0.1",
-    "web-vitals": "^2.1.4",
-    "gh-pages": "^4.0.0"
+    "web-vitals": "^2.1.4"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -38,5 +38,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }

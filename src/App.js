@@ -1,81 +1,163 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import filmsData from './films_complet.json';
 import './App.css';
+import background from './assets/images/background.jpg';
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('');
   const [filteredFilms, setFilteredFilms] = useState([]);
+  const [films, setFilms] = useState(filmsData);
+  const [selectedFilm, setSelectedFilm] = useState(null);
+
+  useEffect(() => {
+    setFilteredFilms(films.slice(0, 50));
+  }, [films]);
 
   const handleSearch = () => {
     const term = searchTerm.toLowerCase();
-    const results = filmsData.filter(film => {
-      // Vérifie si le film ou ses champs existent
+    const results = films.filter(film => {
       if (!film) return false;
-
-      // Recherche dans le titre
-      if (film.titre && typeof film.titre === 'string' && film.titre.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      // Recherche dans le réalisateur
-      if (film.realisateur && typeof film.realisateur === 'string' && film.realisateur.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      // Recherche dans les acteurs
-      if (film.acteur && typeof film.acteur === 'string' && film.acteur.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      // Recherche dans le genre
-      if (film.genre && typeof film.genre === 'string' && film.genre.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      // Recherche dans les mots-clés
-      if (film.mots_cles && typeof film.mots_cles === 'string' && film.mots_cles.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      // Recherche dans le pays
-      if (film.pays && typeof film.pays === 'string' && film.pays.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      // Recherche dans la maison de production
-      if (film.maison_production && typeof film.maison_production === 'string' && film.maison_production.toLowerCase().includes(term)) {
-        return true;
-      }
-
-      return false;
+      const title = film.FILMS?.toLowerCase() || '';
+      return title.includes(term);
     });
-
     setFilteredFilms(results);
-    console.log('Résultats de la recherche:', results);
+  };
+
+  const handleCheckboxChange = (reference) => {
+    const updatedFilms = films.map(film => {
+      if (film.reference === reference) {
+        return {
+          ...film,
+          "VU Sylvain": film["VU Sylvain"] === 1 ? 0 : 1
+        };
+      }
+      return film;
+    });
+    setFilms(updatedFilms);
+  };
+
+  // 🎬 Affiche avec fallback
+  const getAffiche = (film) => {
+    if (!film["Image"]) {
+      return "/affiches/default-poster.jpg";
+    }
+    return `/affiches/${film.reference}.jpg`;
+  };
+
+  // 🎥 lien NAS vidéo
+  const getVideoLink = (film) => {
+    if (film["J'ai"] !== 1) return null;
+    return `http://TON_NAS/videos/${encodeURIComponent(film.FILMS)}.mp4`;
+  };
+
+  // 🎭 lien NAS genre
+  const getGenreLink = (genre) => {
+    if (!genre) return null;
+    return `http://TON_NAS/genres/${encodeURIComponent(genre)}`;
   };
 
   return (
-    <div className="App">
-      <h1>Ma Collection de Films</h1>
-      <div className="search-container">
-        <input
-          type="text"
-          placeholder="Rechercher un film..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-        <button onClick={handleSearch}>Rechercher</button>
-      </div>
-      <div className="film-list">
-        {filteredFilms.length > 0 ? (
-          filteredFilms.map(film => (
-            <div key={film.reference} className="film-name">
-              {film.titre}
+    <div
+      className="App"
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundAttachment: 'fixed'
+      }}
+    >
+      <div className="content">
+
+        <h1>AMC</h1>
+
+        <div className="search-container">
+          <input
+            type="text"
+            placeholder="Rechercher un film..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <button onClick={handleSearch}>Rechercher</button>
+        </div>
+
+        <div className="film-list">
+          {filteredFilms.map(film => {
+            const hasFilm = film["J'ai"] === 1;
+
+            return (
+              <div
+                key={film.reference}
+                className={`film-card ${!hasFilm ? 'not-owned' : ''}`}
+                onClick={() => setSelectedFilm(film)}
+                style={{
+                  backgroundImage: `url(${getAffiche(film)})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center'
+                }}
+              >
+                <div className="overlay">
+
+                  <h3>{film.FILMS}</h3>
+
+                  <p>📅 {film["Année"]}</p>
+                  <p>⏱️ {film["Durée"]}</p>
+
+                  {film["Genre"] && (
+                    <p>
+                      🎭{' '}
+                      <a
+                        href={getGenreLink(film["Genre"])}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        {film["Genre"]}
+                      </a>
+                    </p>
+                  )}
+
+                  {hasFilm && (
+                    <a
+                      href={getVideoLink(film)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      🎥 Voir analyse
+                    </a>
+                  )}
+
+                  <label onClick={(e) => e.stopPropagation()}>
+                    <input
+                      type="checkbox"
+                      checked={film["VU Sylvain"] === 1}
+                      onChange={() => handleCheckboxChange(film.reference)}
+                    />
+                    Vu
+                  </label>
+
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* 🎬 MODAL */}
+        {selectedFilm && (
+          <div className="modal" onClick={() => setSelectedFilm(null)}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <h2>{selectedFilm.FILMS}</h2>
+
+              <p>🎬 Réalisateur : {selectedFilm["Réalisateur"]}</p>
+              <p>🎭 Acteurs : {selectedFilm["Acteur"]}</p>
+              <p>⭐ IMDb : {selectedFilm["Note_IMDB"]}</p>
+              <p>❤️ Ma note : {selectedFilm["Ma note"]}</p>
+
+              <button onClick={() => setSelectedFilm(null)}>Fermer</button>
             </div>
-          ))
-        ) : (
-          <p>Aucun film trouvé.</p>
+          </div>
         )}
+
       </div>
     </div>
   );
