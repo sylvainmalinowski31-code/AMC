@@ -1,0 +1,54 @@
+import pandas as pd
+import json
+
+# Charger le fichier Excel
+file_path = "FILMS SERIES 2026.xlsm"
+sheet_name = "FILMS"  # Remplacez par le nom exact de votre feuille si nécessaire
+
+# Liste des noms réels des colonnes à extraire (avec \n et espaces)
+columns_to_extract = [
+    "ref", "FILMS", "Année", "Durée", "Box Office", "Genre", "Réalisateur", "Acteur",
+    "Note IMDB", "Ma note", "J'ai", "Disque Dur", "VU Sylvain", "Visionnage",
+    "VU Jess", "Go", "Compositeur", "Budget", "Pays", "Sortie ciné fr",
+    "Sortie dvd / blu ray / streaming", "N° franchise", "Franchise", "Prod",
+    "Genre 2nd", "Style", "Origines", "MOTS CLEFS", "Liens", "Public", "Oscar",
+    "Oscar majeur", "Nomination Oscar", "Récompense", "Icones", "Image",
+    "Son", "Ma critique", "Titre original", "IMDB_rang", "Étoile légende"
+]
+
+# Charger les données
+df = pd.read_excel(file_path, sheet_name=sheet_name, usecols=columns_to_extract)
+
+# Renommer les colonnes pour plus de clarté
+df.columns = [
+    "reference", "titre", "annee", "duree", "box_office", "genre", "realisateur", "acteur",
+    "note_imdb", "note_perso", "possession", "disque_dur", "sylvain_vu", "date_visionnage",
+    "jess_vu", "go", "compositeur", "budget", "pays", "date_sortie_cinema",
+    "date_sortie_dvd", "numero_franchise", "franchise", "maison_production",
+    "genre_secondaire", "style", "origines", "mots_cles", "lien", "public_cible", "oscar",
+    "oscar_majeur", "nomination_oscar", "recompense", "icones", "affiche",
+    "son_difficulte", "mes_notes", "titre_original", "imdb", "etoile_legende"
+]
+
+# Convertir la colonne 'duree' en chaîne de caractères
+df["duree"] = df["duree"].astype(str)
+
+# Formater les dates en JJ/MM/AAAA
+date_columns = ["date_visionnage", "date_sortie_cinema", "date_sortie_dvd"]
+for col in date_columns:
+    df[col] = pd.to_datetime(df[col], dayfirst=True, errors='coerce').dt.strftime('%d/%m/%Y')
+
+# Convertir les notes IMDb (arrondies sur 20)
+df["note_imdb"] = df["note_imdb"].apply(
+    lambda x: round(float(x) * 2) if pd.notnull(x) and str(x).replace('.', '', 1).isdigit() else None
+)
+
+# Générer le JSON
+films_json = df.to_dict(orient="records")
+
+# Sauvegarder le JSON dans un fichier
+output_file = "films_complet.json"
+with open(output_file, "w", encoding="utf-8") as f:
+    json.dump(films_json, f, ensure_ascii=False, indent=4)
+
+print(f"Le fichier JSON complet a été généré : {output_file}")

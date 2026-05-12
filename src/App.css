@@ -1,0 +1,134 @@
+.App {
+  text-align: center;
+  padding: 20px;
+  min-height: 100vh;
+}
+
+.content {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.save-button {
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.film-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  padding: 20px;
+}
+
+.film-card {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 15px;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 0.9);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.film-card:hover {
+  transform: scale(1.05);
+}
+
+.film-card label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.film-card input[type="checkbox"] {
+  margin-right: 5px;
+}
+
+.oscar-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 10px 0;
+}
+
+.oscar-wins {
+  color: red;
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.oscar-nominations {
+  color: gray;
+  margin-left: 5px;
+}
+
+.oscar-label {
+  font-size: 0.8em;
+  font-weight: normal;
+}
+
+.oscar-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.film-link {
+  display: block;
+  margin-top: 10px;
+  color: #0066cc;
+  text-decoration: none;
+}
+
+.film-link:hover {
+  text-decoration: underline;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close-button {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
