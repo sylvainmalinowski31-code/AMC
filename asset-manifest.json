@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/AMC/static/css/main.5dcb13a4.css",
+    "main.js": "/AMC/static/js/main.40f1c4cf.js",
+    "static/js/488.319e7683.chunk.js": "/AMC/static/js/488.319e7683.chunk.js",
+    "static/media/background.jpg": "/AMC/static/media/background.29046a84dcad47314fc5.jpg",
+    "index.html": "/AMC/index.html",
+    "main.5dcb13a4.css.map": "/AMC/static/css/main.5dcb13a4.css.map",
+    "main.40f1c4cf.js.map": "/AMC/static/js/main.40f1c4cf.js.map",
+    "488.319e7683.chunk.js.map": "/AMC/static/js/488.319e7683.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.5dcb13a4.css",
+    "static/js/main.40f1c4cf.js"
+  ]
+}
